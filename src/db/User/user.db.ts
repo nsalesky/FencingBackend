@@ -8,24 +8,24 @@ interface User {
 }
 
 /**
- * A generic database interface with methods to create and query data.
+ * A generic database interface with methods to create and query user data.
  */
-interface Database {
+interface UserDatabase {
   /**
    * Gets all of the users currently stored in the database.
    *
    * @returns a list of all users
    */
-  getUsers: () => [User];
+  getUsers(): User[];
 
   /**
    * Attempts to get a single user by their unique email address.
    *
    * @param email the user's email address
    *
-   * @returns Either the data for the user with corresponding `email` or null if no such user exists
+   * @returns Either the data for the user with corresponding `email` or undefined if no such user exists
    */
-  getUserByEmail: (email: string) => User | null;
+  getUserByEmail(email: string): User | undefined;
 
   /**
    * Attempts to create a new user in the database, as long as no pre-existing user has already claimed that
@@ -35,11 +35,13 @@ interface Database {
    * @param fullName the user's full name
    * @param prefName the user's preferred given name
    *
-   * @returns The corresponding user object if the user was successfully inserted into the database (`email` was unique) or null if the operation failed
+   * @returns The corresponding user object if the user was successfully inserted into the database (`email` was unique) or undefined if the operation failed
    */
-  createUser: (
+  createUser(
     email: string,
     fullName: string,
     prefName: string
-  ) => User | null;
+  ): User | undefined;
 }
+
+export { User, UserDatabase };

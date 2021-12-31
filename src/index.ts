@@ -3,6 +3,8 @@ import http from "http";
 import { ApolloServer } from "apollo-server-express";
 import { resolvers, typeDefs } from "./graphql/schema";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
+import dotenv from "dotenv";
+import InMemoryUserDB from "./db/User/imUser.db";
 
 /**
  * Starts the GraphQL server on a port specified in the .env file
@@ -15,7 +17,8 @@ async function startApolloServer() {
     resolvers,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     context: {
-      // todo: update when I actually implement the AppContext
+      // todo: eventually change to a MongoDB database implementation
+      userDB: new InMemoryUserDB(),
     },
   });
 
@@ -23,10 +26,11 @@ async function startApolloServer() {
 
   server.applyMiddleware({ app });
   await new Promise<void>((resolve) =>
-    httpServer.listen({ port: 4000 }, resolve)
+    httpServer.listen({ port: process.env.PORT }, resolve)
   );
 
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
 }
 
+dotenv.config();
 startApolloServer();
