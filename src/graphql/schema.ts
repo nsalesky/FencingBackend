@@ -3,14 +3,18 @@ import { merge } from "lodash";
 import userResolvers from "./User/user.resolvers";
 import userTypes from "./User/user.types";
 
-// A basic root query because we need at least one field
+/**
+ * A basic root query because we need at least one field
+ */
 const Query = gql`
   type Query {
     _empty: String
   }
 `;
 
-// A basic root mutation because we need at least one field
+/**
+ * A basic root mutation because we need at least one field
+ */
 const Mutation = gql`
   type Mutation {
     _empty: String

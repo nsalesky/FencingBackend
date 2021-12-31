@@ -1,5 +1,8 @@
 import { gql } from "apollo-server-core";
 
+/**
+ * The GraphQL types needed to query and mutate User data.
+ */
 const userTypes = gql`
 	extend type Query {
 		users(): [User]!

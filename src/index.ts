@@ -4,6 +4,9 @@ import { ApolloServer } from "apollo-server-express";
 import { resolvers, typeDefs } from "./graphql/schema";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 
+/**
+ * Starts the GraphQL server on a port specified in the .env file
+ */
 async function startApolloServer() {
   const app = express();
   const httpServer = http.createServer(app);
