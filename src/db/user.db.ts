@@ -1,5 +1,5 @@
 /**
- * Represents a single user's data stored in the database with a generic type of unique ID.
+ * Represents a single user's data stored in the database with a generic unique ID.
  */
 interface User<IdType> {
   id: IdType;

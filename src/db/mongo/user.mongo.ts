@@ -1,7 +1,12 @@
 import { Collection, ObjectId, WithId } from "mongodb";
 import { User, UserDatabase } from "../user.db";
 
-interface MongoUser extends WithId<Document> {
+/**
+ * A wrapper interface over the `User` type that represents a single
+ * user in the MongoDB users collection and can be safely casted to
+ * from queries to the database.
+ */
+interface MongoUser extends WithId<Document>, User<ObjectId> {
   id: ObjectId;
   email: string;
   fullName: string;
