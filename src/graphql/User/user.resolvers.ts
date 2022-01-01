@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from "graphql";
-import { User } from "../../db/User/user.db";
+import { User } from "../../db/user.db";
 import AppContext from "../context";
 
 /**
@@ -24,15 +24,6 @@ type CreateUserArgs = {
 };
 
 /**
- * A User object that can safely be returned by GraphQL resolvers.
- */
-type UserOutput = {
-  email: string;
-  fullName: string;
-  prefName: string;
-};
-
-/**
  * The GraphQL resolvers corresponding to the `User` graphql object.
  */
 const userResolvers = {
@@ -46,22 +37,13 @@ const userResolvers = {
      *
      * @returns the list of all users in the database
      */
-    users(
+    async users(
       parent: undefined,
       args: UsersArgs,
       context: AppContext,
       info: GraphQLResolveInfo
-    ): UserOutput[] {
-      let users = context.userDB.getUsers();
-
-      // todo: seems a bit redundant. Is this really necessary for security reasons?
-      return users.map((user: User): UserOutput => {
-        return {
-          email: user.email,
-          fullName: user.fullName,
-          prefName: user.prefName,
-        };
-      });
+    ): Promise<User<any>[]> {
+      return await context.userDB.getUsers();
     },
 
     /**
@@ -73,24 +55,13 @@ const userResolvers = {
      *
      * @returns either the user with corresponding email if it exists, or undefined
      */
-    user(
+    async user(
       parent: undefined,
       args: UserArgs,
       context: AppContext,
       info: GraphQLResolveInfo
-    ): UserOutput | undefined {
-      let user = context.userDB.getUserByEmail(args.email);
-
-      if (user === undefined) {
-        return undefined;
-      }
-
-      // todo: same as above, is this really necessary?
-      return {
-        email: user.email,
-        fullName: user.fullName,
-        prefName: user.prefName,
-      };
+    ): Promise<User<any> | undefined> {
+      return context.userDB.getUserByEmail(args.email);
     },
   },
 
@@ -105,28 +76,17 @@ const userResolvers = {
      *
      * @returns either the user output object if the user was created successfully, or undefined if that email was already claimed
      */
-    createUser(
+    async createUser(
       parent: undefined,
       args: CreateUserArgs,
       context: AppContext,
       info: GraphQLResolveInfo
-    ): UserOutput | undefined {
-      let newUser = context.userDB.createUser(
+    ): Promise<User<any> | undefined> {
+      return context.userDB.createUser(
         args.user.email,
         args.user.fullName,
         args.user.prefName
       );
-
-      if (newUser === undefined) {
-        return undefined;
-      }
-
-      // todo: again, is this really necessary?
-      return {
-        email: newUser.email,
-        fullName: newUser.fullName,
-        prefName: newUser.prefName,
-      };
     },
   },
 };

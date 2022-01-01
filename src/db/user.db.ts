@@ -1,7 +1,8 @@
 /**
- * Represents a single user's data stored in the database.
+ * Represents a single user's data stored in the database with a generic type of unique ID.
  */
-interface User {
+interface User<IdType> {
+  id: IdType;
   email: string;
   fullName: string;
   prefName: string;
@@ -10,13 +11,13 @@ interface User {
 /**
  * A generic database interface with methods to create and query user data.
  */
-interface UserDatabase {
+interface UserDatabase<IdType> {
   /**
    * Gets all of the users currently stored in the database.
    *
    * @returns a list of all users
    */
-  getUsers(): User[];
+  getUsers(): Promise<User<IdType>[]>;
 
   /**
    * Attempts to get a single user by their unique email address.
@@ -25,7 +26,7 @@ interface UserDatabase {
    *
    * @returns Either the data for the user with corresponding `email` or undefined if no such user exists
    */
-  getUserByEmail(email: string): User | undefined;
+  getUserByEmail(email: string): Promise<User<IdType> | undefined>;
 
   /**
    * Attempts to create a new user in the database, as long as no pre-existing user has already claimed that
@@ -41,7 +42,7 @@ interface UserDatabase {
     email: string,
     fullName: string,
     prefName: string
-  ): User | undefined;
+  ): Promise<User<IdType> | undefined>;
 }
 
 export { User, UserDatabase };
