@@ -41,14 +41,6 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
     fullName: string,
     prefName: string
   ): Promise<User<ObjectId> | undefined> {
-    // const query = { email };
-    // const otherUser = await this.usersCollection.findOne(query);
-
-    // // Does someone else already have this email address?
-    // if (otherUser !== null) {
-    //   return undefined;
-    // }
-
     const newUser = {
       email,
       fullName,
