@@ -21,6 +21,9 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
 
   constructor(usersCollection: Collection) {
     this.usersCollection = usersCollection;
+
+    // Create the email index ensuring that we can efficiently query Users by their unique email address
+    this.usersCollection.createIndex({ email: 1 }, { unique: true });
   }
 
   async getUsers(): Promise<User<ObjectId>[]> {
