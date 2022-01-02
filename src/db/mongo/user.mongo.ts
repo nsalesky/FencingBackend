@@ -41,13 +41,13 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
     fullName: string,
     prefName: string
   ): Promise<User<ObjectId> | undefined> {
-    const query = { email };
-    const otherUser = await this.usersCollection.findOne(query);
+    // const query = { email };
+    // const otherUser = await this.usersCollection.findOne(query);
 
-    // Does someone else already have this email address?
-    if (otherUser !== null) {
-      return undefined;
-    }
+    // // Does someone else already have this email address?
+    // if (otherUser !== null) {
+    //   return undefined;
+    // }
 
     const newUser = {
       email,
@@ -55,8 +55,15 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
       prefName,
     };
 
-    await this.usersCollection.insertOne(newUser);
-
-    return await this.getUserByEmail(email);
+    return await this.usersCollection
+      .insertOne(newUser)
+      .then(() => {
+        // Insertion was successful
+        return this.getUserByEmail(email);
+      })
+      .catch((reason) => {
+        // Insertion was not successful: duplicate email
+        return Promise.resolve(undefined);
+      });
   }
 }
