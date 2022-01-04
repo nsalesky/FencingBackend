@@ -12,13 +12,18 @@ import path from "path/posix";
 import AppContext from "./graphql/context";
 import { ObjectId } from "mongodb";
 import { User } from "./db/user.db";
+import initializeFirebase from "./firebase/firebase";
 
 /**
  * Starts the GraphQL server on a port specified in the .env file
  */
 async function startApolloServer() {
+  dotenv.config();
   const app = express();
   const httpServer = http.createServer(app);
+
+  // Initializes Firebase
+  initializeFirebase();
 
   // Setup the database connections
   const collections = await connectToDatabase();
@@ -67,5 +72,4 @@ async function startApolloServer() {
   );
 }
 
-dotenv.config();
 startApolloServer();
