@@ -1,11 +1,8 @@
 import { GraphQLResolveInfo } from "graphql";
+import { ObjectId } from "mongodb";
 import { User } from "../../db/user.db";
 import AppContext from "../context";
-
-/**
- * The empty arguments for the `users` query.
- */
-type UsersArgs = {};
+import { authenticated } from "../Guards/authGuard";
 
 /**
  * The arguments for the `userByEmail` query, a single unique email address.
@@ -34,6 +31,24 @@ type CreateUserArgs = {
 const userResolvers = {
   Query: {
     /**
+     * A resolver to query for the current logged in user, determined through the `authentication` header's token.
+     * @param parent the parent element for this query
+     * @param args the query arguments, nothing in this case
+     * @param context the app context
+     * @param info query info
+     *
+     * @returns the current user if all pre-requisite information has been provided, notably a valid JWT token in the HTTP header
+     */
+    async currentUser(
+      parent: undefined,
+      args: {},
+      context: AppContext,
+      info: GraphQLResolveInfo
+    ): Promise<User<any> | undefined> {
+      return Promise.resolve(context.currentUser);
+    },
+
+    /**
      * A resolver to query for all users.
      * @param parent the parent element for this query
      * @param args the query arguments, nothing in this case
@@ -44,7 +59,7 @@ const userResolvers = {
      */
     async users(
       parent: undefined,
-      args: UsersArgs,
+      args: {},
       context: AppContext,
       info: GraphQLResolveInfo
     ): Promise<User<any>[]> {
@@ -84,7 +99,7 @@ const userResolvers = {
       context: AppContext,
       info: GraphQLResolveInfo
     ): Promise<User<any> | undefined> {
-      return context.userDB.getUserByID(args.id);
+      return context.userDB.getUserByID(new ObjectId(args.id));
     },
   },
 

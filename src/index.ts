@@ -34,12 +34,9 @@ async function startApolloServer() {
       let currentUser: User<ObjectId> | undefined = undefined;
 
       try {
-        authToken = (req.headers[config.AuthHeaderName()] as string) || "";
+        authToken = req.headers.authorization ?? "";
 
-        if (authToken) {
-          // There was some token in the headers
-          currentUser = await userDB.tradeTokenForUser(authToken);
-        }
+        currentUser = await userDB.tradeTokenForUser(authToken);
       } catch (e) {
         console.warn(
           `Unable to authenticate user using authentication token: ${authToken}`
