@@ -29,6 +29,15 @@ interface UserDatabase<IdType> {
   getUserByEmail(email: string): Promise<User<IdType> | undefined>;
 
   /**
+   * Attempts to get a single user by their unique ID.
+   *
+   * @param id the user's ID
+   *
+   * @returns Either the data for the user with corresponding `id` or undefined if no such user exists
+   */
+  getUserByID(id: IdType): Promise<User<IdType> | undefined>;
+
+  /**
    * Attempts to create a new user in the database, as long as no pre-existing user has already claimed that
    * email address.
    *

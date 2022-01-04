@@ -53,7 +53,30 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
   async getUserByEmail(email: string): Promise<User<ObjectId> | undefined> {
     const query = { email };
 
-    return toUser((await this.usersCollection.findOne(query)) as MongoUser);
+    let potentialUser = await this.usersCollection.findOne(query);
+
+    if (potentialUser === null) {
+      // There is no user with that email
+      return undefined;
+    } else {
+      // There is a user, put it in the correct form
+      return toUser(potentialUser as MongoUser);
+    }
+  }
+
+  async getUserByID(id: ObjectId): Promise<User<ObjectId> | undefined> {
+    // Convert the ID into MongoDB form, I don't exactly know why this is necessary but it does the trick
+    const query = { _id: new ObjectId(id) };
+
+    let potentialUser = await this.usersCollection.findOne(query);
+
+    if (potentialUser === null) {
+      // There is no user with that ID
+      return undefined;
+    } else {
+      // There is a user, put it in the correct form
+      return toUser(potentialUser as MongoUser);
+    }
   }
 
   async createUser(

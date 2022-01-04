@@ -8,9 +8,14 @@ import AppContext from "../context";
 type UsersArgs = {};
 
 /**
- * The arguments for the `user` query, a single unique email address.
+ * The arguments for the `userByEmail` query, a single unique email address.
  */
-type UserArgs = { email: string };
+type UserEmailArgs = { email: string };
+
+/**
+ * The arguments for the `userByID` query, a single unique ID.
+ */
+type UserIDArgs = { id: string };
 
 /**
  * The arguments for the `createUser` mutation.
@@ -55,13 +60,31 @@ const userResolvers = {
      *
      * @returns either the user with corresponding email if it exists, or undefined
      */
-    async user(
+    async userByEmail(
       parent: undefined,
-      args: UserArgs,
+      args: UserEmailArgs,
       context: AppContext,
       info: GraphQLResolveInfo
     ): Promise<User<any> | undefined> {
       return context.userDB.getUserByEmail(args.email);
+    },
+
+    /**
+     * A resolver to query a specific user by their unique ID.
+     * @param parent the parent element for this query
+     * @param args the query arguments, including the ID
+     * @param context the app context
+     * @param info query info
+     *
+     * @returns either the user with corresponding ID if it exists, or undefined
+     */
+    async userByID(
+      parent: undefined,
+      args: UserIDArgs,
+      context: AppContext,
+      info: GraphQLResolveInfo
+    ): Promise<User<any> | undefined> {
+      return context.userDB.getUserByID(args.id);
     },
   },
 

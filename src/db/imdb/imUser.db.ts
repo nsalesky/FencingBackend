@@ -19,6 +19,23 @@ class InMemoryUserDB implements UserDatabase<number> {
     return Promise.resolve(this.users.get(email));
   }
 
+  getUserByID(id: number): Promise<User<number> | undefined> {
+    // Find all users with the given ID
+    let matchingUsers = Array.from(this.users.values()).filter(
+      (user: User<number>): boolean => {
+        return user.id === id;
+      }
+    );
+
+    if (matchingUsers.length === 0) {
+      // No users have that ID
+      return Promise.resolve(undefined);
+    } else {
+      // At least one user has that ID, just return the first user, because there should only be one
+      return Promise.resolve(matchingUsers[0]);
+    }
+  }
+
   createUser(
     email: string,
     fullName: string,
