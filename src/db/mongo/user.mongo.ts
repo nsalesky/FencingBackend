@@ -79,6 +79,10 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
     }
   }
 
+  async tradeTokenForUser(
+    authToken: string
+  ): Promise<User<ObjectId> | undefined> {}
+
   async createUser(
     email: string,
     fullName: string,

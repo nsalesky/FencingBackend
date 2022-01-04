@@ -37,6 +37,8 @@ interface UserDatabase<IdType> {
    */
   getUserByID(id: IdType): Promise<User<IdType> | undefined>;
 
+  tradeTokenForUser(authToken: string): Promise<User<IdType> | undefined>;
+
   /**
    * Attempts to create a new user in the database, as long as no pre-existing user has already claimed that
    * email address.

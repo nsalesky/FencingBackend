@@ -36,6 +36,10 @@ class InMemoryUserDB implements UserDatabase<number> {
     }
   }
 
+  async tradeTokenForUser(
+    authToken: string
+  ): Promise<User<number> | undefined> {}
+
   createUser(
     email: string,
     fullName: string,

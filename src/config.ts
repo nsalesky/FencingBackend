@@ -30,4 +30,12 @@ export default {
   UsersCollectionName(): string {
     return process.env.USERS_COLLECTION_NAME ?? "";
   },
+
+  /**
+   * Gets the configured authentication header name from the AUTHENTICATION_HEADER_NAME environment variable.
+   * @returns the configured AUTHENTICATION_HEADER_NAME value, or "" if no environment variable has been set.
+   */
+  AuthenticationHeaderName(): string {
+    return process.env.AUTHENTICATION_HEADER_NAME ?? "";
+  },
 };
