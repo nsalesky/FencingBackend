@@ -20,6 +20,7 @@ const userTypes = gql`
   }
 
   type User {
+    id: ID!
     email: String!
     fullName: String!
     prefName: String!
