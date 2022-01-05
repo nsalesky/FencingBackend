@@ -2,7 +2,7 @@ import { GraphQLResolveInfo } from "graphql";
 import { ObjectId } from "mongodb";
 import { User } from "../../db/user.db";
 import AppContext from "../context";
-import { authenticated } from "../Guards/authGuard";
+import { ensureAuthenticated } from "../Guards/authGuard";
 
 /**
  * The arguments for the `userByEmail` query, a single unique email address.
@@ -45,6 +45,8 @@ const userResolvers = {
       context: AppContext,
       info: GraphQLResolveInfo
     ): Promise<User<any> | undefined> {
+      ensureAuthenticated(context);
+
       return Promise.resolve(context.currentUser);
     },
 

@@ -3,7 +3,7 @@ import config from "./config";
 import { User } from "./db/user.db";
 
 /**
- * A JWT Payload that possibly includes a User's email.
+ * A JWT Payload that possibly includes a `User`'s email.
  */
 interface UserPayload extends JwtPayload {
   email?: string;
@@ -30,6 +30,8 @@ const tradeTokenForEmail = (authToken: string): string | undefined => {
       return undefined;
     }
   } catch (err) {
+    console.log(err);
+
     // The token is invalid in some way
     return undefined;
   }
