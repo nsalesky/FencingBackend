@@ -5,6 +5,7 @@ import { gql } from "apollo-server-core";
  */
 const userTypes = gql`
   extend type Query {
+    currentUser: User
     users: [User]!
     userByEmail(email: String!): User
     userByID(id: ID!): User

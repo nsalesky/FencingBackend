@@ -1,3 +1,4 @@
+import { tradeTokenForEmail } from "../../jwt";
 import { User, UserDatabase } from "../user.db";
 
 /**
@@ -33,6 +34,20 @@ class InMemoryUserDB implements UserDatabase<number> {
     } else {
       // At least one user has that ID, just return the first user, because there should only be one
       return Promise.resolve(matchingUsers[0]);
+    }
+  }
+
+  async tradeTokenForUser(
+    authToken: string
+  ): Promise<User<number> | undefined> {
+    let email = tradeTokenForEmail(authToken);
+
+    if (email) {
+      // The token decoded successfully, see if it actually corresponds to a User and return them
+      return this.getUserByEmail(email);
+    } else {
+      // The token did not have any email value specified
+      return Promise.resolve(undefined);
     }
   }
 

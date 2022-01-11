@@ -1,4 +1,5 @@
 import { Collection, FindCursor, ObjectId, WithId } from "mongodb";
+import { tradeTokenForEmail } from "../../jwt";
 import { User, UserDatabase } from "../user.db";
 
 /**
@@ -76,6 +77,20 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
     } else {
       // There is a user, put it in the correct form
       return toUser(potentialUser as MongoUser);
+    }
+  }
+
+  async tradeTokenForUser(
+    authToken: string
+  ): Promise<User<ObjectId> | undefined> {
+    let email = tradeTokenForEmail(authToken);
+
+    if (email) {
+      // The token decoded successfully, see if it actually corresponds to a User and return them
+      return this.getUserByEmail(email);
+    } else {
+      // The token did not have any email value specified
+      return Promise.resolve(undefined);
     }
   }
 

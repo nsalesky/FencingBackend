@@ -30,4 +30,20 @@ export default {
   UsersCollectionName(): string {
     return process.env.USERS_COLLECTION_NAME ?? "";
   },
+
+  /**
+   * Gets the configured authentication header name from the AUTH_HEADER_NAME environment variable.
+   * @returns the configured AUTH_HEADER_NAME value, or "" if no environment variable has been set.
+   */
+  // AuthHeaderName(): string {
+  //   return process.env.AUTH_HEADER_NAME ?? "";
+  // },
+
+  /**
+   * Gets the configured authentication secret key from the AUTH_SECRET environment variable.
+   * @returns the configured AUTH_SECRET value, or "" if no environment variable has been set.
+   */
+  AuthSecret(): string {
+    return process.env.AUTH_SECRET ?? "";
+  },
 };

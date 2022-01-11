@@ -9,23 +9,45 @@ import config from "./config";
 import { connectToDatabase } from "./db/mongo/mongo";
 import { UserMongoDB } from "./db/mongo/user.mongo";
 import path from "path/posix";
+import AppContext from "./graphql/context";
+import { ObjectId } from "mongodb";
+import { User } from "./db/user.db";
 
 /**
  * Starts the GraphQL server on a port specified in the .env file
  */
 async function startApolloServer() {
+  dotenv.config();
   const app = express();
   const httpServer = http.createServer(app);
 
   // Setup the database connections
   const collections = await connectToDatabase();
+  let userDB = new UserMongoDB(collections.usersCollection);
 
   const server = new ApolloServer({
     typeDefs,
     resolvers,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-    context: {
-      userDB: new UserMongoDB(collections.usersCollection),
+    context: async ({ req }): Promise<AppContext> => {
+      let authToken: string = "";
+      let currentUser: User<ObjectId> | undefined = undefined;
+
+      try {
+        authToken = req.headers.authorization ?? "";
+
+        currentUser = await userDB.tradeTokenForUser(authToken);
+      } catch (e) {
+        console.warn(
+          `Unable to authenticate user using authentication token: ${authToken}`
+        );
+      }
+
+      return {
+        userDB,
+        authToken,
+        currentUser,
+      };
     },
   });
 
@@ -42,5 +64,4 @@ async function startApolloServer() {
   );
 }
 
-dotenv.config();
 startApolloServer();
