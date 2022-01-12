@@ -12,6 +12,7 @@ import path from "path/posix";
 import AppContext from "./graphql/context";
 import { ObjectId } from "mongodb";
 import { User } from "./db/user.db";
+import { TournamentMongoDB } from "./db/mongo/tournament.mongo";
 
 /**
  * Starts the GraphQL server on a port specified in the .env file
@@ -24,6 +25,7 @@ async function startApolloServer() {
   // Setup the database connections
   const collections = await connectToDatabase();
   let userDB = new UserMongoDB(collections.usersCollection);
+  let tournamentDB = new TournamentMongoDB(collections.tournamentsCollection);
 
   const server = new ApolloServer({
     typeDefs,
@@ -45,6 +47,7 @@ async function startApolloServer() {
 
       return {
         userDB,
+        tournamentDB,
         authToken,
         currentUser,
       };

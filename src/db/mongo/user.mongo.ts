@@ -20,12 +20,12 @@ interface MongoUser extends WithId<Document> {
  * @param user the user's data in MongoDB form
  * @returns the user's data with an `id` field equal to the MongoDB `_id` value
  */
-const toUser = (user: MongoUser): User<ObjectId> => {
+function toUser(user: MongoUser): User<ObjectId> {
   return {
-    id: user._id,
     ...user,
+    id: user._id,
   };
-};
+}
 
 /**
  * An implementation of the `UserDatabase` interface using MongoDB for data persistence.
@@ -41,8 +41,8 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
   }
 
   async getUsers(): Promise<User<ObjectId>[]> {
-    // Find all users
     return (
+      // Find all users
       ((await this.usersCollection.find()) as FindCursor<MongoUser>)
         // Rename the _id field to id
         .map((mongoUser: MongoUser): User<ObjectId> => toUser(mongoUser))
@@ -111,7 +111,7 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
       })
       .catch((reason) => {
         // Insertion was not successful: duplicate email
-        return Promise.resolve(null);
+        return null;
       });
   }
 }
