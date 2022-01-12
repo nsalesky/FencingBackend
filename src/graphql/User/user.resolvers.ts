@@ -50,6 +50,8 @@ const userResolvers = {
       return Promise.resolve(context.currentUser);
     },
 
+    // todo: lock down or disable resolvers, add an admin role that can access them
+
     /**
      * A resolver to query for all users.
      * @param parent the parent element for this query

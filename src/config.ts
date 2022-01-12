@@ -46,4 +46,12 @@ export default {
   AuthSecret(): string {
     return process.env.AUTH_SECRET ?? "";
   },
+
+  /**
+   * Gets the configured length of tournament private codes from the TOURNAMENT_CODE_LENGTH environment variable.
+   * @returns the configured TOURNAMENT_CODE_LENGTH value, or 6 if no environment variable has been set.
+   */
+  TournamentCodeLength(): number {
+    return parseInt(process.env.TOURNAMENT_CODE_LENGTH ?? "6");
+  },
 };

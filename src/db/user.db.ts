@@ -2,9 +2,24 @@
  * Represents a single user's data stored in the database with a generic unique ID.
  */
 interface User<IdType> {
+  /**
+   * The `User`'s unique ID.
+   */
   id: IdType;
+
+  /**
+   * The `User`'s unique email address.
+   */
   email: string;
+
+  /**
+   * The `User`'s full name.
+   */
   fullName: string;
+
+  /**
+   * The `User`'s preferred name, ie what name they prefer to be referred to as by the UI.
+   */
   prefName: string;
 }
 
@@ -53,7 +68,7 @@ interface UserDatabase<IdType> {
     email: string,
     fullName: string,
     prefName: string
-  ): Promise<User<IdType> | undefined>;
+  ): Promise<User<IdType> | null>;
 }
 
 export { User, UserDatabase };

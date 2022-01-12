@@ -3,6 +3,7 @@ import { User, UserDatabase } from "../user.db";
 
 /**
  * A simple in-memory implementation of `UserDatabase` that implements all functionality
+ * to store `User`s in a database,
  * but doesn't promise any kind of data persistence.
  */
 class InMemoryUserDB implements UserDatabase<number> {
