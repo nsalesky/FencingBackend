@@ -51,38 +51,36 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
     );
   }
 
-  async getUserByEmail(email: string): Promise<User<ObjectId> | undefined> {
+  async getUserByEmail(email: string): Promise<User<ObjectId> | null> {
     const query = { email };
 
     let potentialUser = await this.usersCollection.findOne(query);
 
-    if (potentialUser === null) {
-      // There is no user with that email
-      return undefined;
-    } else {
+    if (potentialUser) {
       // There is a user, put it in the correct form
       return toUser(potentialUser as MongoUser);
+    } else {
+      // There is no user with that email
+      return null;
     }
   }
 
-  async getUserByID(id: ObjectId): Promise<User<ObjectId> | undefined> {
+  async getUserByID(id: ObjectId): Promise<User<ObjectId> | null> {
     // Convert the ID into MongoDB form, I don't exactly know why this is necessary but it does the trick
     const query = { _id: new ObjectId(id) };
 
     let potentialUser = await this.usersCollection.findOne(query);
 
-    if (potentialUser === null) {
-      // There is no user with that ID
-      return undefined;
-    } else {
+    if (potentialUser) {
       // There is a user, put it in the correct form
       return toUser(potentialUser as MongoUser);
+    } else {
+      // There is no user with that ID
+      return null;
     }
   }
 
-  async tradeTokenForUser(
-    authToken: string
-  ): Promise<User<ObjectId> | undefined> {
+  async tradeTokenForUser(authToken: string): Promise<User<ObjectId> | null> {
     let email = tradeTokenForEmail(authToken);
 
     if (email) {
@@ -90,7 +88,7 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
       return this.getUserByEmail(email);
     } else {
       // The token did not have any email value specified
-      return Promise.resolve(undefined);
+      return Promise.resolve(null);
     }
   }
 
@@ -98,7 +96,7 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
     email: string,
     fullName: string,
     prefName: string
-  ): Promise<User<ObjectId> | undefined> {
+  ): Promise<User<ObjectId> | null> {
     const newUser = {
       email,
       fullName,
@@ -113,7 +111,7 @@ export class UserMongoDB implements UserDatabase<ObjectId> {
       })
       .catch((reason) => {
         // Insertion was not successful: duplicate email
-        return Promise.resolve(undefined);
+        return Promise.resolve(null);
       });
   }
 }

@@ -44,7 +44,7 @@ const userResolvers = {
       args: {},
       context: AppContext,
       info: GraphQLResolveInfo
-    ): Promise<User<any> | undefined> {
+    ): Promise<User<any> | null> {
       ensureAuthenticated(context);
 
       return Promise.resolve(context.currentUser);
@@ -77,14 +77,14 @@ const userResolvers = {
      * @param context the app context
      * @param info query info
      *
-     * @returns either the user with corresponding email if it exists, or undefined
+     * @returns either the user with corresponding email if it exists, or null
      */
     async userByEmail(
       parent: undefined,
       args: UserEmailArgs,
       context: AppContext,
       info: GraphQLResolveInfo
-    ): Promise<User<any> | undefined> {
+    ): Promise<User<any> | null> {
       return context.userDB.getUserByEmail(args.email);
     },
 
@@ -95,14 +95,14 @@ const userResolvers = {
      * @param context the app context
      * @param info query info
      *
-     * @returns either the user with corresponding ID if it exists, or undefined
+     * @returns either the user with corresponding ID if it exists, or null
      */
     async userByID(
       parent: undefined,
       args: UserIDArgs,
       context: AppContext,
       info: GraphQLResolveInfo
-    ): Promise<User<any> | undefined> {
+    ): Promise<User<any> | null> {
       return context.userDB.getUserByID(new ObjectId(args.id));
     },
   },
@@ -116,14 +116,14 @@ const userResolvers = {
      * @param context the app context
      * @param info mutation info
      *
-     * @returns either the user output object if the user was created successfully, or undefined if that email was already claimed
+     * @returns either the user output object if the user was created successfully, or null if that email was already claimed
      */
     async createUser(
       parent: undefined,
       args: CreateUserArgs,
       context: AppContext,
       info: GraphQLResolveInfo
-    ): Promise<User<any> | undefined> {
+    ): Promise<User<any> | null> {
       return context.userDB.createUser(
         args.user.email,
         args.user.fullName,

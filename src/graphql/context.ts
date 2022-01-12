@@ -9,7 +9,7 @@ interface AppContext {
   userDB: UserDatabase<ObjectId>;
 
   authToken: string;
-  currentUser: User<ObjectId> | undefined;
+  currentUser: User<ObjectId> | null;
 }
 
 export default AppContext;

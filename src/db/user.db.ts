@@ -39,20 +39,20 @@ interface UserDatabase<IdType> {
    *
    * @param email the user's email address
    *
-   * @returns Either the data for the user with corresponding `email` or undefined if no such user exists
+   * @returns Either the data for the user with corresponding `email` or null if no such user exists
    */
-  getUserByEmail(email: string): Promise<User<IdType> | undefined>;
+  getUserByEmail(email: string): Promise<User<IdType> | null>;
 
   /**
    * Attempts to get a single user by their unique ID.
    *
    * @param id the user's ID
    *
-   * @returns Either the data for the user with corresponding `id` or undefined if no such user exists
+   * @returns Either the data for the user with corresponding `id` or null if no such user exists
    */
-  getUserByID(id: IdType): Promise<User<IdType> | undefined>;
+  getUserByID(id: IdType): Promise<User<IdType> | null>;
 
-  tradeTokenForUser(authToken: string): Promise<User<IdType> | undefined>;
+  tradeTokenForUser(authToken: string): Promise<User<IdType> | null>;
 
   /**
    * Attempts to create a new user in the database, as long as no pre-existing user has already claimed that
@@ -62,7 +62,7 @@ interface UserDatabase<IdType> {
    * @param fullName the user's full name
    * @param prefName the user's preferred given name
    *
-   * @returns The corresponding user object if the user was successfully inserted into the database (`email` was unique) or undefined if the operation failed
+   * @returns The corresponding user object if the user was successfully inserted into the database (`email` was unique) or null if the operation failed
    */
   createUser(
     email: string,

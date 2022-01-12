@@ -31,7 +31,7 @@ async function startApolloServer() {
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     context: async ({ req }): Promise<AppContext> => {
       let authToken: string = "";
-      let currentUser: User<ObjectId> | undefined = undefined;
+      let currentUser: User<ObjectId> | null = null;
 
       try {
         authToken = req.headers.authorization ?? "";
