@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo } from "graphql";
+import { ObjectId } from "mongodb";
 import { Tournament } from "../../db/tournament.db";
 import AppContext from "../context";
 import { ensureAuthenticated } from "../Guards/authGuard";
@@ -101,6 +102,52 @@ const tournamentResolvers = {
         args.isPrivate,
         args.location,
         args.time
+      );
+    },
+
+    /**
+     * A resolver that attempts to register the authenticated user as a participant for the given tournament.
+     * @param parent the parent element for this mutation
+     * @param args the mutation arguments
+     * @param context the app context
+     * @param info mutation info
+     * @returns the updated tournament data if successful or null otherwise
+     * @throws an error if no authenticated user is present
+     */
+    async registerParticipant(
+      parent: undefined,
+      args: { tournamentId: ObjectId },
+      context: AppContext,
+      info: GraphQLResolveInfo
+    ): Promise<Tournament<any> | null> {
+      ensureAuthenticated(context);
+
+      return await context.tournamentDB.registerUser(
+        args.tournamentId,
+        context.currentUser!.id
+      );
+    },
+
+    /**
+     * A resolver that attempts to unregister the authenticated user as a participant for the given tournament.
+     * @param parent the parent element for this mutation
+     * @param args the mutation arguments
+     * @param context the app context
+     * @param info mutation info
+     * @returns the updated tournament data if successful or null otherwise
+     * @throws an error if no authenticated user is present
+     */
+    async unregisterParticipant(
+      parent: undefined,
+      args: { tournamentId: ObjectId },
+      context: AppContext,
+      info: GraphQLResolveInfo
+    ): Promise<Tournament<any> | null> {
+      ensureAuthenticated(context);
+
+      return await context.tournamentDB.unregisterUser(
+        args.tournamentId,
+        context.currentUser!.id
       );
     },
   },

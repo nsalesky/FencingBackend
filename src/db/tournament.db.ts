@@ -19,6 +19,11 @@ interface Tournament<IdType> {
   managers: IdType[];
 
   /**
+   * The list of ID's for `User`s registered as participants for this tournament.
+   */
+  participants: IdType[];
+
+  /**
    * The unique code controlling the privacy of this tournament. If `null`, then this tournament is considered public, and anyone may see the results
    * and register for it. If a `string`, then this tournament is considered private, and a user must provide the matching string code in order
    * to see the results or register.
@@ -82,6 +87,25 @@ interface TournamentDatabase<IdType> {
     isPrivate: Boolean,
     location: string,
     time: Date
+  ): Promise<Tournament<IdType> | null>;
+
+  /**
+   * Registers the user with the given ID as a participant in the tournament of the given ID.
+   * @param id the ID of the tournament to modify
+   * @param userId the ID of the user to register.
+   * @returns the updated tournament data if successful, or null otherwise
+   */
+  registerUser(id: IdType, userId: IdType): Promise<Tournament<IdType> | null>;
+
+  /**
+   * Unregisters the user with the given ID as a participant from the tournament of the given ID.
+   * @param id the ID of the tournament to modify
+   * @param userId the ID of the user to register.
+   * @returns the updated tournament data if successful, or null otherwise
+   */
+  unregisterUser(
+    id: IdType,
+    userId: IdType
   ): Promise<Tournament<IdType> | null>;
 }
 

@@ -20,12 +20,16 @@ const tournamentTypes = gql`
       location: String!
       time: Date!
     ): Tournament
+
+    registerParticipant(tournamentId: ID!): Tournament
+    unregisterParticipant(tournamentId: ID!): Tournament
   }
 
   type Tournament {
     id: ID!
     name: String!
     managers: [ID!]!
+    participants: [ID!]!
     privateCode: String
     location: String!
     time: Date!

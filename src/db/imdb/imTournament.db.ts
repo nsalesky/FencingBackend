@@ -90,6 +90,7 @@ class InMemoryTournamentDB implements TournamentDatabase<number> {
       id: this.tournaments.length,
       name,
       managers: [initialManager],
+      participants: [],
       privateCode,
       location,
       time,
@@ -98,5 +99,60 @@ class InMemoryTournamentDB implements TournamentDatabase<number> {
     this.tournaments.push(newTournament);
 
     return Promise.resolve(newTournament);
+  }
+
+  async registerUser(
+    id: number,
+    userId: number
+  ): Promise<Tournament<number> | null> {
+    let possibleIndex = this.tournaments.findIndex(
+      (tournament): Boolean => tournament.id === id
+    );
+
+    if (possibleIndex !== -1) {
+      let tournamentValue = this.tournaments[possibleIndex];
+
+      if (!tournamentValue.participants.includes(userId)) {
+        // Only add it once, don't throw an error if a user attempts to register multiple times,
+        // just handle it silently
+        tournamentValue.participants.push(userId);
+
+        // Update the array
+        this.tournaments[possibleIndex] = tournamentValue;
+      }
+
+      return tournamentValue;
+    } else {
+      return null;
+    }
+  }
+
+  async unregisterUser(
+    id: number,
+    userId: number
+  ): Promise<Tournament<number> | null> {
+    let possibleIndex = this.tournaments.findIndex(
+      (tournament): Boolean => tournament.id === id
+    );
+
+    if (possibleIndex !== -1) {
+      let tournamentValue = this.tournaments[possibleIndex];
+
+      let userIndex = tournamentValue.participants.findIndex(
+        (idValue) => idValue === userId
+      );
+
+      if (userIndex !== -1) {
+        // User is present, so remove them
+        tournamentValue.participants.splice(userIndex, 1);
+
+        //Update the stored value
+        this.tournaments[possibleIndex] = tournamentValue;
+      }
+
+      return tournamentValue;
+    } else {
+      return null;
+    }
   }
 }

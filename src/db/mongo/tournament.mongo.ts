@@ -3,6 +3,7 @@ import {
   FindCursor,
   InsertOneResult,
   ObjectId,
+  UpdateResult,
   WithId,
 } from "mongodb";
 import config from "../../config";
@@ -13,6 +14,7 @@ interface MongoTournament extends WithId<Document> {
   _id: ObjectId;
   name: string;
   managers: ObjectId[];
+  participants: ObjectId[];
   privateCode: string | null;
   loc: string;
   time: Date;
@@ -48,7 +50,7 @@ export class TournamentMongoDB implements TournamentDatabase<ObjectId> {
     const publicFilter = {
       privateCode: null,
       time: {
-        $gte: afterDate,
+        $gte: afterDate ?? new Date(0),
       },
     };
 
@@ -152,6 +154,7 @@ export class TournamentMongoDB implements TournamentDatabase<ObjectId> {
     const newTournament = {
       name,
       managers: [initialManager],
+      participants: [],
       privateCode,
       loc: location,
       time,
@@ -165,6 +168,48 @@ export class TournamentMongoDB implements TournamentDatabase<ObjectId> {
       })
       .catch((reason) => {
         // Insertion was not successful for some reason
+        return null;
+      });
+  }
+
+  async registerUser(
+    id: ObjectId,
+    userId: ObjectId
+  ): Promise<Tournament<ObjectId> | null> {
+    const tournamentFilter = { _id: new ObjectId(id) };
+    const update = {
+      $addToSet: {
+        participants: new ObjectId(userId),
+      },
+    };
+
+    return await this.tournamentsCollection
+      .updateOne(tournamentFilter, update)
+      .then((updateResult: UpdateResult) => {
+        return this.getTournament(id);
+      })
+      .catch((reason) => {
+        return null;
+      });
+  }
+
+  async unregisterUser(
+    id: ObjectId,
+    userId: ObjectId
+  ): Promise<Tournament<ObjectId> | null> {
+    const tournamentFilter = { _id: new ObjectId(id) };
+    const update = {
+      $pull: {
+        participants: new ObjectId(userId),
+      },
+    };
+
+    return await this.tournamentsCollection
+      .updateOne(tournamentFilter, update)
+      .then((updateResult: UpdateResult) => {
+        return this.getTournament(id);
+      })
+      .catch((reason) => {
         return null;
       });
   }
