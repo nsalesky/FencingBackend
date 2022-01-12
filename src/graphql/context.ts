@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { TournamentDatabase } from "../db/tournament.db";
 import { User, UserDatabase } from "../db/user.db";
 
 /**
@@ -7,9 +8,10 @@ import { User, UserDatabase } from "../db/user.db";
  */
 interface AppContext {
   userDB: UserDatabase<ObjectId>;
+  tournamentDB: TournamentDatabase<ObjectId>;
 
   authToken: string;
-  currentUser: User<ObjectId> | undefined;
+  currentUser: User<ObjectId> | null;
 }
 
 export default AppContext;

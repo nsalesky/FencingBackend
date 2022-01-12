@@ -7,6 +7,7 @@ import config from "../../config";
  */
 interface DBCollections {
   usersCollection: Collection;
+  tournamentsCollection: Collection;
 }
 
 /**
@@ -20,8 +21,12 @@ export async function connectToDatabase(): Promise<DBCollections> {
   const db = client.db(config.DBName());
 
   const usersCollection = db.collection(config.UsersCollectionName());
+  const tournamentsCollection = db.collection(
+    config.TournamentsCollectionName()
+  );
 
   return {
     usersCollection,
+    tournamentsCollection,
   };
 }
