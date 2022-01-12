@@ -34,6 +34,23 @@ const tournamentResolvers = {
     ): Promise<Tournament<any>[]> {
       return await context.tournamentDB.getPublicTournaments(args.afterDate);
     },
+
+    /**
+     * A resolver to query a tournament by it's private code.
+     * @param parent the parent element for this query
+     * @param args the query arguments
+     * @param context the app context
+     * @param info query info
+     * @returns the tournament with the given private code if it exists, or null
+     */
+    async getTournamentByCode(
+      parent: undefined,
+      args: { privateCode: string },
+      context: AppContext,
+      info: GraphQLResolveInfo
+    ): Promise<Tournament<any> | null> {
+      return await context.tournamentDB.getTournamentByCode(args.privateCode);
+    },
   },
 
   User: {

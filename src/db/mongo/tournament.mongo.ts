@@ -100,7 +100,22 @@ export class TournamentMongoDB implements TournamentDatabase<ObjectId> {
     );
 
     if (potentialTournament) {
-      // There is a tournament, so put it in the correct format
+      return toTournament(potentialTournament as MongoTournament);
+    } else {
+      return null;
+    }
+  }
+
+  async getTournamentByCode(
+    privateCode: string
+  ): Promise<Tournament<ObjectId> | null> {
+    const codeFilter = { privateCode };
+
+    let potentialTournament = await this.tournamentsCollection.findOne(
+      codeFilter
+    );
+
+    if (potentialTournament) {
       return toTournament(potentialTournament as MongoTournament);
     } else {
       return null;

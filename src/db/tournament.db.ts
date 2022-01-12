@@ -62,6 +62,13 @@ interface TournamentDatabase<IdType> {
   getTournament(id: IdType): Promise<Tournament<IdType> | null>;
 
   /**
+   * Gets the tournament with the given `privateCode`.
+   * @param privateCode the private code to query
+   * @returns the tournament with the given code, or null if none such exists
+   */
+  getTournamentByCode(privateCode: string): Promise<Tournament<IdType> | null>;
+
+  /**
    * Attempts to create a new tournament with the given information
    * @param name the tournament's display name
    * @param initialManager the initial manager for this tournament

@@ -14,7 +14,9 @@ class InMemoryTournamentDB implements TournamentDatabase<number> {
     this.tournaments = new Array();
   }
 
-  getPublicTournaments(afterDate: Date | null): Promise<Tournament<number>[]> {
+  async getPublicTournaments(
+    afterDate: Date | null
+  ): Promise<Tournament<number>[]> {
     return Promise.resolve(
       this.tournaments.filter((tournament): Boolean => {
         if (afterDate) {
@@ -28,14 +30,15 @@ class InMemoryTournamentDB implements TournamentDatabase<number> {
     );
   }
 
-  getManagedTournaments(userId: number): Promise<Tournament<number>[]> {
+  async getManagedTournaments(userId: number): Promise<Tournament<number>[]> {
     return Promise.resolve(
       this.tournaments.filter((tournament): Boolean => {
         return tournament.managers.includes(userId);
       })
     );
   }
-  getTournament(id: number): Promise<Tournament<number> | null> {
+
+  async getTournament(id: number): Promise<Tournament<number> | null> {
     let possibleEntry = this.tournaments.find(
       (tournament): Boolean => tournament.id === id
     );
@@ -43,7 +46,17 @@ class InMemoryTournamentDB implements TournamentDatabase<number> {
     return Promise.resolve(possibleEntry ?? null);
   }
 
-  createTournament(
+  async getTournamentByCode(
+    privateCode: string
+  ): Promise<Tournament<number> | null> {
+    let possibleEntry = this.tournaments.find(
+      (tournament): Boolean => tournament.privateCode === privateCode
+    );
+
+    return Promise.resolve(possibleEntry ?? null);
+  }
+
+  async createTournament(
     name: string,
     initialManager: number,
     isPrivate: Boolean,

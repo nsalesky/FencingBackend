@@ -6,6 +6,7 @@ import { gql } from "apollo-server-core";
 const tournamentTypes = gql`
   extend type Query {
     publicTournaments(afterDate: Date): [Tournament!]!
+    getTournamentByCode(privateCode: String!): Tournament
   }
 
   extend type User {
