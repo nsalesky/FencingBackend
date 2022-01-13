@@ -33,7 +33,7 @@ const tournamentResolvers = {
       context: AppContext,
       info: GraphQLResolveInfo
     ): Promise<Tournament<any>[]> {
-      return await context.tournamentDB.getPublicTournaments(args.afterDate);
+      return context.tournamentDB.getPublicTournaments(args.afterDate);
     },
 
     /**
@@ -50,7 +50,7 @@ const tournamentResolvers = {
       context: AppContext,
       info: GraphQLResolveInfo
     ): Promise<Tournament<any> | null> {
-      return await context.tournamentDB.getTournamentByCode(args.privateCode);
+      return context.tournamentDB.getTournamentByCode(args.privateCode);
     },
   },
 
@@ -72,7 +72,20 @@ const tournamentResolvers = {
     ): Promise<Tournament<any>[]> {
       ensureAuthenticated(context);
 
-      return await context.tournamentDB.getManagedTournaments(
+      return context.tournamentDB.getManagedTournaments(
+        context.currentUser!.id
+      );
+    },
+
+    async registeredTournaments(
+      parent: undefined,
+      args: {},
+      context: AppContext,
+      info: GraphQLResolveInfo
+    ): Promise<Tournament<any>[]> {
+      ensureAuthenticated(context);
+
+      return context.tournamentDB.getRegisteredTournaments(
         context.currentUser!.id
       );
     },
@@ -96,7 +109,7 @@ const tournamentResolvers = {
     ): Promise<Tournament<any> | null> {
       ensureAuthenticated(context);
 
-      return await context.tournamentDB.createTournament(
+      return context.tournamentDB.createTournament(
         args.name,
         context.currentUser!.id,
         args.isPrivate,
@@ -122,7 +135,7 @@ const tournamentResolvers = {
     ): Promise<Tournament<any> | null> {
       ensureAuthenticated(context);
 
-      return await context.tournamentDB.registerUser(
+      return context.tournamentDB.registerUser(
         args.tournamentId,
         context.currentUser!.id
       );
@@ -145,7 +158,7 @@ const tournamentResolvers = {
     ): Promise<Tournament<any> | null> {
       ensureAuthenticated(context);
 
-      return await context.tournamentDB.unregisterUser(
+      return context.tournamentDB.unregisterUser(
         args.tournamentId,
         context.currentUser!.id
       );

@@ -11,6 +11,7 @@ const tournamentTypes = gql`
 
   extend type User {
     managedTournaments: [Tournament!]!
+    registeredTournaments: [Tournament!]!
   }
 
   extend type Mutation {
