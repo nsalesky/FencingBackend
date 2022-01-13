@@ -1,5 +1,7 @@
+import { Document as BsonDocument } from "bson";
 import {
   Collection,
+  Filter,
   FindCursor,
   InsertOneResult,
   ObjectId,
@@ -44,6 +46,48 @@ export class TournamentMongoDB implements TournamentDatabase<ObjectId> {
     this.tournamentsCollection = tournamentsCollection;
   }
 
+  /**
+   * Gets all tournaments that match the given filter.
+   * @param filter the filter to query against
+   * @returns all tournaments that match the filter in generic form
+   */
+  private async getAllTournamentsByFilter(
+    filter: Filter<BsonDocument>
+  ): Promise<Tournament<ObjectId>[]> {
+    return (
+      // Find all tournaments with this filter
+      (
+        (await this.tournamentsCollection.find(
+          filter
+        )) as FindCursor<MongoTournament>
+      )
+        // Rename the fields
+        .map(
+          (tournament: MongoTournament): Tournament<ObjectId> =>
+            toTournament(tournament)
+        )
+        // Return it as an array
+        .toArray()
+    );
+  }
+
+  /**
+   * Gets the first tournament that matches the given filter.
+   * @param filter the filter to query against
+   * @returns either the tournament that matches the filter, or null if no tournaments match
+   */
+  private async getOneTournamentByFilter(
+    filter: Filter<BsonDocument>
+  ): Promise<Tournament<ObjectId> | null> {
+    let potentialTournament = await this.tournamentsCollection.findOne(filter);
+
+    if (potentialTournament) {
+      return toTournament(potentialTournament as MongoTournament);
+    } else {
+      return null;
+    }
+  }
+
   async getPublicTournaments(
     afterDate: Date | null
   ): Promise<Tournament<ObjectId>[]> {
@@ -54,21 +98,7 @@ export class TournamentMongoDB implements TournamentDatabase<ObjectId> {
       },
     };
 
-    return (
-      // Find all tournaments with a null privateCode
-      (
-        (await this.tournamentsCollection.find(
-          publicFilter
-        )) as FindCursor<MongoTournament>
-      )
-        // Rename the fields
-        .map(
-          (tournament: MongoTournament): Tournament<ObjectId> =>
-            toTournament(tournament)
-        )
-        // Return it as an array
-        .toArray()
-    );
+    return this.getAllTournamentsByFilter(publicFilter);
   }
 
   async getManagedTournaments(
@@ -77,35 +107,22 @@ export class TournamentMongoDB implements TournamentDatabase<ObjectId> {
     // Matches all tournaments that include this user as a manager
     const managerFilter = { managers: new ObjectId(userId) };
 
-    return (
-      // Find all tournaments with this manager
-      (
-        (await this.tournamentsCollection.find(
-          managerFilter
-        )) as FindCursor<MongoTournament>
-      )
-        // Rename the fields
-        .map(
-          (tournament: MongoTournament): Tournament<ObjectId> =>
-            toTournament(tournament)
-        )
-        // Return it as an array
-        .toArray()
-    );
+    return this.getAllTournamentsByFilter(managerFilter);
+  }
+
+  async getRegisteredTournaments(
+    userId: ObjectId
+  ): Promise<Tournament<ObjectId>[]> {
+    // Matches all tournaments that include this user as a participant
+    const participantFilter = { participants: new ObjectId(userId) };
+
+    return this.getAllTournamentsByFilter(participantFilter);
   }
 
   async getTournament(id: ObjectId): Promise<Tournament<ObjectId> | null> {
     const idFilter = { _id: new ObjectId(id) };
 
-    let potentialTournament = await this.tournamentsCollection.findOne(
-      idFilter
-    );
-
-    if (potentialTournament) {
-      return toTournament(potentialTournament as MongoTournament);
-    } else {
-      return null;
-    }
+    return this.getOneTournamentByFilter(idFilter);
   }
 
   async getTournamentByCode(
@@ -113,15 +130,7 @@ export class TournamentMongoDB implements TournamentDatabase<ObjectId> {
   ): Promise<Tournament<ObjectId> | null> {
     const codeFilter = { privateCode };
 
-    let potentialTournament = await this.tournamentsCollection.findOne(
-      codeFilter
-    );
-
-    if (potentialTournament) {
-      return toTournament(potentialTournament as MongoTournament);
-    } else {
-      return null;
-    }
+    return this.getOneTournamentByFilter(codeFilter);
   }
 
   async createTournament(

@@ -60,6 +60,13 @@ interface TournamentDatabase<IdType> {
   getManagedTournaments(userId: IdType): Promise<Tournament<IdType>[]>;
 
   /**
+   * Get all tournaments that the `User` with the given ID is registered for.
+   * @param userId the unique ID of the user to query
+   * @returns the list of tournaments that the given user is registered as a participant for
+   */
+  getRegisteredTournaments(userId: IdType): Promise<Tournament<IdType>[]>;
+
+  /**
    * Gets the tournament with the given `id`.
    * @param id the id of the tournament to query
    * @returns the tournament with the given ID, or null if none such exists

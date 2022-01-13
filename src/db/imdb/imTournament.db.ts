@@ -38,6 +38,16 @@ class InMemoryTournamentDB implements TournamentDatabase<number> {
     );
   }
 
+  async getRegisteredTournaments(
+    userId: number
+  ): Promise<Tournament<number>[]> {
+    return Promise.resolve(
+      this.tournaments.filter((tournament): Boolean => {
+        return tournament.participants.includes(userId);
+      })
+    );
+  }
+
   async getTournament(id: number): Promise<Tournament<number> | null> {
     let possibleEntry = this.tournaments.find(
       (tournament): Boolean => tournament.id === id
