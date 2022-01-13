@@ -1,4 +1,3 @@
-import { GraphQLResolveInfo } from "graphql";
 import { ObjectId } from "mongodb";
 import { User } from "../../db/user.db";
 import AppContext from "../context";
@@ -35,15 +34,13 @@ const userResolvers = {
      * @param parent the parent element for this query
      * @param args the query arguments, nothing in this case
      * @param context the app context
-     * @param info query info
      *
      * @returns the current user if all pre-requisite information has been provided, notably a valid JWT token in the HTTP header
      */
     async currentUser(
       parent: undefined,
       args: {},
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<User<any> | null> {
       ensureAuthenticated(context);
 
@@ -57,15 +54,13 @@ const userResolvers = {
      * @param parent the parent element for this query
      * @param args the query arguments, nothing in this case
      * @param context the app context
-     * @param info query info
      *
      * @returns the list of all users in the database
      */
     async users(
       parent: undefined,
       args: {},
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<User<any>[]> {
       return await context.userDB.getUsers();
     },
@@ -75,15 +70,13 @@ const userResolvers = {
      * @param parent the parent element for this query
      * @param args the query arguments, including the email
      * @param context the app context
-     * @param info query info
      *
      * @returns either the user with corresponding email if it exists, or null
      */
     async userByEmail(
       parent: undefined,
       args: UserEmailArgs,
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<User<any> | null> {
       return context.userDB.getUserByEmail(args.email);
     },
@@ -93,15 +86,13 @@ const userResolvers = {
      * @param parent the parent element for this query
      * @param args the query arguments, including the ID
      * @param context the app context
-     * @param info query info
      *
      * @returns either the user with corresponding ID if it exists, or null
      */
     async userByID(
       parent: undefined,
       args: UserIDArgs,
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<User<any> | null> {
       return context.userDB.getUserByID(new ObjectId(args.id));
     },
@@ -114,15 +105,13 @@ const userResolvers = {
      * @param parent the parent element for this mutation
      * @param args the mutation arguments, including the new user object
      * @param context the app context
-     * @param info mutation info
      *
      * @returns either the user output object if the user was created successfully, or null if that email was already claimed
      */
     async createUser(
       parent: undefined,
       args: CreateUserArgs,
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<User<any> | null> {
       return context.userDB.createUser(
         args.user.email,

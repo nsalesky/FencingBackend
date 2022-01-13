@@ -1,4 +1,3 @@
-import { GraphQLResolveInfo } from "graphql";
 import { ObjectId } from "mongodb";
 import { Tournament } from "../../db/tournament.db";
 import AppContext from "../context";
@@ -24,14 +23,12 @@ const tournamentResolvers = {
      * @param parent the parent element for this query
      * @param args the query arguments
      * @param context the app context
-     * @param info query info
      * @returns the list of public tournaments taking place after the given potentially null date
      */
     async publicTournaments(
       parent: undefined,
       args: { afterDate: Date | null },
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<Tournament<any>[]> {
       return context.tournamentDB.getPublicTournaments(args.afterDate);
     },
@@ -41,14 +38,12 @@ const tournamentResolvers = {
      * @param parent the parent element for this query
      * @param args the query arguments
      * @param context the app context
-     * @param info query info
      * @returns the tournament with the given private code if it exists, or null
      */
     async getTournamentByCode(
       parent: undefined,
       args: { privateCode: string },
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<Tournament<any> | null> {
       return context.tournamentDB.getTournamentByCode(args.privateCode);
     },
@@ -60,15 +55,13 @@ const tournamentResolvers = {
      * @param parent the parent element for this query
      * @param args the query arguments
      * @param context the app context
-     * @param info query info
      * @returns the list of tournaments managed by the authenticated user
      * @throws an error if there is no authenticated user
      */
     async managedTournaments(
       parent: undefined,
       args: {},
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<Tournament<any>[]> {
       ensureAuthenticated(context);
 
@@ -77,11 +70,18 @@ const tournamentResolvers = {
       );
     },
 
+    /**
+     * Gets the list of tournaments that the currently authenticated user is registered for.
+     * @param parent the parent element for this query
+     * @param args the query arguments
+     * @param context the app context
+     * @returns the list of tournaments registered for by the authenticated user
+     * @throws an error if there is no authenticated user
+     */
     async registeredTournaments(
       parent: undefined,
       args: {},
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<Tournament<any>[]> {
       ensureAuthenticated(context);
 
@@ -97,15 +97,13 @@ const tournamentResolvers = {
      * @param parent the parent element for this mutation
      * @param args the mutation arguments
      * @param context the app context
-     * @param info mutation info
      * @returns either the created tournament if successful, or null if it failed
      * @throws an error if the user is not authenticated
      */
     async createTournament(
       parent: undefined,
       args: CreateTournamentArgs,
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<Tournament<any> | null> {
       ensureAuthenticated(context);
 
@@ -123,15 +121,13 @@ const tournamentResolvers = {
      * @param parent the parent element for this mutation
      * @param args the mutation arguments
      * @param context the app context
-     * @param info mutation info
      * @returns the updated tournament data if successful or null otherwise
      * @throws an error if no authenticated user is present
      */
     async registerParticipant(
       parent: undefined,
       args: { tournamentId: ObjectId },
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<Tournament<any> | null> {
       ensureAuthenticated(context);
 
@@ -146,15 +142,13 @@ const tournamentResolvers = {
      * @param parent the parent element for this mutation
      * @param args the mutation arguments
      * @param context the app context
-     * @param info mutation info
      * @returns the updated tournament data if successful or null otherwise
      * @throws an error if no authenticated user is present
      */
     async unregisterParticipant(
       parent: undefined,
       args: { tournamentId: ObjectId },
-      context: AppContext,
-      info: GraphQLResolveInfo
+      context: AppContext
     ): Promise<Tournament<any> | null> {
       ensureAuthenticated(context);
 
