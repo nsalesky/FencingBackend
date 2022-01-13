@@ -12,13 +12,7 @@ const userTypes = gql`
   }
 
   extend type Mutation {
-    createUser(user: NewUser!): User
-  }
-
-  input NewUser {
-    email: String!
-    fullName: String!
-    prefName: String!
+    createUser(email: String!, fullName: String!, prefName: String!): User
   }
 
   type User {

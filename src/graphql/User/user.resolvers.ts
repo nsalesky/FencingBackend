@@ -4,24 +4,12 @@ import AppContext from "../context";
 import { ensureAuthenticated } from "../Guards/authGuard";
 
 /**
- * The arguments for the `userByEmail` query, a single unique email address.
- */
-type UserEmailArgs = { email: string };
-
-/**
- * The arguments for the `userByID` query, a single unique ID.
- */
-type UserIDArgs = { id: string };
-
-/**
  * The arguments for the `createUser` mutation.
  */
 type CreateUserArgs = {
-  user: {
-    email: string;
-    fullName: string;
-    prefName: string;
-  };
+  email: string;
+  fullName: string;
+  prefName: string;
 };
 
 /**
@@ -75,7 +63,7 @@ const userResolvers = {
      */
     async userByEmail(
       parent: undefined,
-      args: UserEmailArgs,
+      args: { email: string },
       context: AppContext
     ): Promise<User<any> | null> {
       return context.userDB.getUserByEmail(args.email);
@@ -91,7 +79,7 @@ const userResolvers = {
      */
     async userByID(
       parent: undefined,
-      args: UserIDArgs,
+      args: { id: string },
       context: AppContext
     ): Promise<User<any> | null> {
       return context.userDB.getUserByID(new ObjectId(args.id));
@@ -114,9 +102,9 @@ const userResolvers = {
       context: AppContext
     ): Promise<User<any> | null> {
       return context.userDB.createUser(
-        args.user.email,
-        args.user.fullName,
-        args.user.prefName
+        args.email,
+        args.fullName,
+        args.prefName
       );
     },
   },
